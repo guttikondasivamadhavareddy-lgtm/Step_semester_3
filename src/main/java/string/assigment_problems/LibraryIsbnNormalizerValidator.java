@@ -3,21 +3,64 @@ package string.assigment_problems;
 import java.util.Scanner;
 
 public class LibraryIsbnNormalizerValidator {
+
+    public static String normalizeCode(String raw) {
+        String code = raw.trim();
+
+        if (code.length() < 3) {
+            return code;
+        }
+
+        String publisher = code.substring(0, 3).toUpperCase();
+        String rest = code.substring(3);
+
+        return publisher + rest;
+    }
+
+    public static String validateAndFormat(String code) {
+
+        if (code.length() != 13) {
+            return "Invalid: code must be exactly 13 characters";
+        }
+
+        for (int i = 0; i < 3; i++) {
+            if (!Character.isLetter(code.charAt(i))) {
+                return "Invalid: publisher code must be 3 letters";
+            }
+        }
+
+        for (int i = 3; i < 13; i++) {
+            if (!Character.isDigit(code.charAt(i))) {
+                return "Invalid: body must contain only digits";
+            }
+        }
+
+        String publisher = code.substring(0, 3);
+        String year = code.substring(3, 7);
+        String catalog = code.substring(7, 13);
+
+        StringBuilder result = new StringBuilder();
+
+        result.append("[")
+              .append(publisher)
+              .append("] YEAR: ")
+              .append(year)
+              .append(" | CATALOG: ")
+              .append(catalog);
+
+        return result.toString();
+    }
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
-        System.out.print("Enter ISBN: ");
-        String isbn = sc.nextLine();
+        System.out.print("Enter ISBN code: ");
+        String raw = sc.nextLine();
 
-        String normalized = isbn.replaceAll("[^0-9]", "");
+        String normalized = normalizeCode(raw);
+        String result = validateAndFormat(normalized);
 
-        System.out.println("Normalized ISBN: " + normalized);
-
-        if (normalized.length() == 10 || normalized.length() == 13) {
-            System.out.println("Valid ISBN length");
-        } else {
-            System.out.println("Invalid ISBN length");
-        }
+        System.out.println(result);
 
         sc.close();
     }
